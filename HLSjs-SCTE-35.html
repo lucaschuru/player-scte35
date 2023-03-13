@@ -1,0 +1,88 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>SCTE 35 HLS METADATA TEST PAGE</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f5f5f5;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #fff;
+      box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+      border-radius: 5px;
+    }
+    label {
+      display: block;
+      margin-bottom: 10px;
+      font-size: 16px;
+      font-weight: bold;
+      color: #333;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      border: 2px solid #ccc;
+      border-radius: 5px;
+      box-sizing: border-box;
+      margin-bottom: 20px;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+    }
+    button:hover {
+      background-color: #3e8e41;
+    }
+    video {
+      display: block;
+      width: 100%;
+      margin-top: 20px;
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+</head>
+<body>
+  <div class="container">
+    <label for="url-input">Enter HLS Stream URL:</label>
+    <input type="text" id="url-input" />
+    <button id="load-button">Load Stream</button>
+    <video id="video-element"></video>
+  </div>
+
+  <script>
+    const video = document.getElementById('video-element');
+    video.controls = true
+    video.muted = true
+    video.autoplay = true
+    const urlInput = document.getElementById('url-input');
+    const loadButton = document.getElementById('load-button');
+
+    loadButton.addEventListener('click', function() {
+      const url = urlInput.value;
+      if (url) {
+        const hls = new Hls();
+        hls.loadSource(url);
+        hls.attachMedia(video);
+        hls.on(Hls.Events.FRAG_PARSING_METADATA, function(event, data) {
+          const metadata = data.samples[0].data;
+          console.log('SCTE 35 Metadata:', metadata);
+        });
+      }
+    });
+  </script>
+</body>
+</html>
